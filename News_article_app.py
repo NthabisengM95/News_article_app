@@ -185,7 +185,6 @@ def predict(article,model):
 
     df = pd.DataFrame(data = input_data, columns = column_name)
     
-    #df = extract_url_category(df, 'Url')
 
     df["Article"] = df["Article"].apply(clean_text)  
 
@@ -289,7 +288,7 @@ elif page =="Category Predictor":
     st.title("Category Predictor")
     st.write("Input your news article details below and find out what category it belongs to!")
     
-    input_text = st.text_input("Enter news article:")
+    input_text = st.text_area("Enter news article:", height=150)
                 
     if st.button("Predict"):
         if input_text:
