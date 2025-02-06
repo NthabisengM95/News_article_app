@@ -2,7 +2,6 @@ import pandas as pd
 import streamlit as st
 import os
 import pickle
-import xgboost
 import re
 import statistics
 from sklearn.model_selection import train_test_split
@@ -12,6 +11,10 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from scipy.sparse import hstack
+import nltk
+nltk.download('punkt_tab')
+nltk.download('wordnet')
+nltk.download('stopwords')
 
 def extract_url_category(data, url_column):
     """
