@@ -179,37 +179,26 @@ def preprocess_text(text):
     # Return the preprocessed list of tokens
     return tokens
 
-def predict(headline,description,content,url,model):
-    input_data = [[headline, description, content, url]]
-    column_name = ["Headlines", "Description", "Content", "Url"]
+def predict(article,model):
+    input_data = [article]
+    column_name = ["Article"]
 
     df = pd.DataFrame(data = input_data, columns = column_name)
     
-    df = extract_url_category(df, 'Url')
+    #df = extract_url_category(df, 'Url')
 
-    df["Headlines"] = df["Headlines"].apply(clean_text)  
-    df["Description"] = df["Description"].apply(clean_text)  
-    df["Content"] = df["Content"].apply(clean_text)  
-    df["Url_Category"] = df["Url_Category"].apply(clean_text)
+    df["Article"] = df["Article"].apply(clean_text)  
 
-    df["Headlines"] = df["Headlines"].apply(preprocess_text)  
-    df["Description"] = df["Description"].apply(preprocess_text)  
-    df["Content"] = df["Content"].apply(preprocess_text)  
-    df["Url_Category"] = df["Url_Category"].apply(preprocess_text)
+    df["Article"] = df["Article"].apply(preprocess_text)  
 
-    df["Headlines"] = df["Headlines"].apply(lambda tokens: ' '.join(tokens))
-    df["Description"] = df["Description"].apply(lambda tokens: ' '.join(tokens))
-    df["Content"] = df["Content"].apply(lambda tokens: ' '.join(tokens))
-    df["Url_Category"] = df["Url_Category"].apply(lambda tokens: ' '.join(tokens))
+    df["Article"] = df["Article"].apply(lambda tokens: ' '.join(tokens))
 
     with open('Vectorizer_vocabulary.txt', 'r') as file:
         vocab = [v.strip() for v in file]
 
     vectorizer = TfidfVectorizer(vocabulary = vocab)
 
-    df['combined'] = df["Headlines"] + df["Description"] + df["Content"] + df["Url_Category"]
-
-    input_set = vectorizer.fit_transform(df['combined']).toarray()
+    input_set = vectorizer.fit_transform(df["Article"]).toarray()
 
     category_num_nb = models[0].predict(input_set)[0]
     category_num_svm = models[1].predict(input_set)[0]
@@ -300,14 +289,11 @@ elif page =="Category Predictor":
     st.title("Category Predictor")
     st.write("Input your news article details below and find out what category it belongs to!")
     
-    input_headline = st.text_input("Enter the  headline:")
-    input_description = st.text_input("Enter the description:")
-    input_content = st.text_input("Enter the content:")
-    input_url = st.text_input("Enter the url:")
+    input_text = st.text_input("Enter news article:")
                 
     if st.button("Predict"):
-        if input_headline and input_description and input_content and input_url:
-            result = predict(input_headline,input_description,input_content,input_url,models)
+        if input_text:
+            result = predict(input_text,models)
             st.write("Category:", result)
         else:
             st.warning("Please fill all the fields.")
