@@ -4,8 +4,6 @@ import os
 import pickle
 import re
 import statistics
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
